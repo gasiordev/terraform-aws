@@ -1,0 +1,25 @@
+aws_account_production = ""
+aws_account_test = ""
+aws_account_test_role_arn = ""
+region_production = "eu-west-1"
+region_failover = "eu-west-2"
+region_staging = "eu-west-1"
+region_development = "eu-west-1"
+env_name_mgmt = "mgmt"
+env_name_prod = "prod"
+env_name_stag = "stag"
+env_name_dev = "dev"
+ip_prefix_mgmt = "10.10"
+ip_prefix_prod = "10.20"
+ip_prefix_fmgmt = "10.110"
+ip_prefix_fprod = "10.120"
+ip_prefix_stag = "10.30"
+ip_prefix_dev = "10.40"
+vendor = "nicholas"
+
+route53_zone = ""
+production_certificate = ""
+failover_certificate = ""
+
+failover_db_replication = true
+failover_s3_bucket_replication = true
