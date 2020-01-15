@@ -22,9 +22,22 @@ The apps stack creates application resources like load balancers, EC2
 instances, DB instances, S3 buckets and so on.
 
 ### Running
+#### Configuration
 Create `config.tfvars` file by using the `config.tfvars.example` template.
 Update it with your AWS account details.
 
+Some configuration key explanation:
+
+* aws_account_production - AWS account number for production
+* aws_account_test - AWS account number for staging and dev environments
+* aws_account_test_role_arn - ARN of role to be assumed to access test account
+* route53_zone - ID of Route 53 zone of domain to use
+* production_certificate - ARN of wildcard certificate for the domain in
+  production region; it's used with load balancers
+* failover_certificate - ARN of wildcard certificate for the domain in
+  failover region; it's used with load balancers
+
+#### Building
 Use `make` to manage the infrastructure.
 
 ### Troubleshooting
