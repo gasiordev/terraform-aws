@@ -12,27 +12,14 @@ variable "name" {
 variable "vpc" {
   type = string
 }
-variable "private_subnet_a" {
+variable "subnet_a" {
   type = string
 }
-variable "private_subnet_b" {
+variable "subnet_b" {
   type = string
 }
-variable "private_subnet_c" {
+variable "subnet_c" {
   type = string
-}
-variable "public_subnet_a" {
-  type = string
-}
-variable "public_subnet_b" {
-  type = string
-}
-variable "public_subnet_c" {
-  type = string
-}
-variable "internal" {
-  type    = bool
-  default = true
 }
 variable "az_offset" {
   type        = number

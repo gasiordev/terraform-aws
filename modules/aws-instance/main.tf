@@ -64,7 +64,7 @@ resource "aws_instance" "instance" {
 
   vpc_security_group_ids = concat(var.security_groups, list(aws_security_group.instance.id))
 
-  subnet_id = var.internal == true ? element(list(var.private_subnet_a, var.private_subnet_b, var.private_subnet_c), (count.index + var.az_offset) % 3) : element(list(var.public_subnet_a, var.public_subnet_b, var.public_subnet_c), (count.index + var.az_offset) % 3)
+  subnet_id = element(list(var.subnet_a, var.subnet_b, var.subnet_c), (count.index + var.az_offset) % 3)
 
   root_block_device {
     volume_type = var.volume_type

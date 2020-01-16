@@ -30,9 +30,9 @@ resource "aws_lb" "main" {
   security_groups = compact(concat(list(aws_security_group.lb.id), var.security_groups))
 
   subnets = [
-    var.internal == true ? var.private_subnet_a : var.public_subnet_a,
-    var.internal == true ? var.private_subnet_b : var.public_subnet_b,
-    var.internal == true ? var.private_subnet_c : var.public_subnet_c
+    var.subnet_a,
+    var.subnet_b,
+    var.subnet_c
   ]
 
   tags = merge(map("${var.vendor}:tfmodule", "aws-lb", "Name", "${var.env}-${var.name}"), var.tags)
