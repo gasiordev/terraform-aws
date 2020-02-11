@@ -6,7 +6,7 @@ variable "aws_account_test_role_arn" {}
 
 # Vendor is used in names for global resources like S3 buckets
 variable "vendor" {
-  default = "nicholas"
+  default = "nmls"
 }
 
 # Environment names - used for Name tag etc.

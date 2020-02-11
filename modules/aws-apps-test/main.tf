@@ -15,10 +15,32 @@ module "aws_instance" {
   instance_count = var.instance_count
   key_name = var.ssh_key_name
   tags = {
-    dupa = "123"
+    vendor = var.vendor
+    "${var.vendor}:env" = var.env
+    "${var.vendor}:role" = "test"
+    "${var.vendor}:tfmodule" = "aws-apps-test"
   }
   security_groups = []
 }
+
+# Another way of getting running instance
+# Note that it cannot be empty!
+#data "aws_instances" "test_instances" {
+#  filter {
+#    name = "tag:vendor"
+#    values = [var.vendor]
+#  }
+#  filter {
+#    name = "tag:${var.vendor}:env"
+#    values = [var.env]
+#  }
+#  filter {
+#    name = "tag:${var.vendor}:role"
+#    values = ["test"]
+#  }
+#  instance_state_names = ["running"]
+#  depends_on = [module.aws_instance]
+#}
 
 module "aws_lb" {
   source = "./../aws-lb"
@@ -43,7 +65,10 @@ module "aws_lb" {
   target_group_protocol = "HTTP"
   target_group_healthcheck_path = "/"
   tags = {
-    "dupa" = "123"
+    vendor = var.vendor
+    "${var.vendor}:env" = var.env
+    "${var.vendor}:role" = "test"
+    "${var.vendor}:tfmodule" = "aws-apps-test"
   }
   security_groups = []
   route53_zones = var.route53_zones

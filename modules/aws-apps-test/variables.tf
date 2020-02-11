@@ -1,3 +1,6 @@
+variable "vendor" {
+  type = string
+}
 variable "env" {
   type = string
 }

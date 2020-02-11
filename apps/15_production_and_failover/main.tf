@@ -39,6 +39,7 @@ data "terraform_remote_state" "base_failover" {
 # Production
 module "aws_apps_test_prod" {
   source            = "./../../modules/aws-apps-test"
+  vendor            = var.vendor
   env               = "prod"
   vpc               = data.terraform_remote_state.network_production.outputs.prod_vpc_id
   private_subnet_a  = data.terraform_remote_state.network_production.outputs.prod_subnet_private_a
@@ -64,6 +65,7 @@ module "aws_apps_test_fprod" {
   providers = {
     aws = aws.failover
   }
+  vendor                = var.vendor
   env                   = "fprod"
   vpc                   = data.terraform_remote_state.network_failover.outputs.prod_vpc_id
   private_subnet_a      = data.terraform_remote_state.network_failover.outputs.prod_subnet_private_a
@@ -86,7 +88,7 @@ module "aws_apps_test_fprod" {
 module "prod_s3_bucket" {
   source = "./../../modules/aws-s3-bucket"
   env = "prod"
-  vendor = "nicholas"
+  vendor = var.vendor
   name = "test"
   replication = var.failover_s3_bucket_replication
   replica_region = var.region_failover
