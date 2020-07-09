@@ -4,10 +4,7 @@ module "aws_instance" {
   source = "./../aws-instance"
   env = var.env
   name = "test"
-  vpc = var.vpc
-  subnet_a = var.private_subnet_a
-  subnet_b = var.private_subnet_b
-  subnet_c = var.private_subnet_c
+  vpc_attributes = var.vpc_attributes
   ami = "ami-0ff760d16d9497662"
   instance_type = "t2.micro"
   volume_type = "gp2"
@@ -21,6 +18,7 @@ module "aws_instance" {
     "${var.vendor}:tfmodule" = "aws-apps-test"
   }
   security_groups = []
+  internal = true
 }
 
 # Another way of getting running instance
@@ -46,10 +44,7 @@ module "aws_lb" {
   source = "./../aws-lb"
   env = var.env
   name = "test"
-  vpc = var.vpc
-  subnet_a = var.public_subnet_a
-  subnet_b = var.public_subnet_b
-  subnet_c = var.public_subnet_c
+  vpc_attributes = var.vpc_attributes
   region = data.aws_region.current.name
   availability_zones = [ "${data.aws_region.current.name}a", "${data.aws_region.current.name}b", "${data.aws_region.current.name}c" ]
   ssl_policy = "ELBSecurityPolicy-TLS-1-2-2017-01"
@@ -72,6 +67,7 @@ module "aws_lb" {
   }
   security_groups = []
   route53_zones = var.route53_zones
+  internal = false
 }
 
 module "aws_db_instance" {
@@ -82,7 +78,7 @@ module "aws_db_instance" {
   engine_version = "5.6"
   instance_class = "db.t3.micro"
   storage = "20"
-  vpc = var.vpc
+  vpc_attributes = var.vpc_attributes
   subnet_group = var.private_db_subnet
   security_groups = []
   create_new_security_group = true
@@ -91,4 +87,3 @@ module "aws_db_instance" {
   route53_zones = var.route53_zones
   replication_source = var.db_replication_source
 }
-

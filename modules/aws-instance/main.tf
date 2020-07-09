@@ -1,7 +1,7 @@
 resource "aws_security_group" "instance" {
   name = "${var.env}-i-${var.name}"
   description = "Instance of ${var.name} in ${var.env} env"
-  vpc_id = var.vpc
+  vpc_id = var.vpc_attributes.vpc_id
 
   egress {
     from_port   = 0
@@ -64,7 +64,7 @@ resource "aws_instance" "instance" {
 
   vpc_security_group_ids = concat(var.security_groups, list(aws_security_group.instance.id))
 
-  subnet_id = element(list(var.subnet_a, var.subnet_b, var.subnet_c), (count.index + var.az_offset) % 3)
+  subnet_id = var.internal ? element(list(var.vpc_attributes.subnet_id.private.a, var.vpc_attributes.subnet_id.private.b, var.vpc_attributes.subnet_id.private.c), (count.index + var.az_offset) % 3) : element(list(var.vpc_attributes.subnet_id.public.a, var.vpc_attributes.subnet_id.public.b, var.vpc_attributes.subnet_id.public.c), (count.index + var.az_offset) % 3)
 
   root_block_device {
     volume_type = var.volume_type
@@ -72,7 +72,7 @@ resource "aws_instance" "instance" {
   }
 
   key_name = var.key_name
-  associate_public_ip_address = false
+  associate_public_ip_address = var.internal ? true : false
 
   iam_instance_profile = var.instance_profile != "" ? var.instance_profile : aws_iam_instance_profile.instance[0].id
 

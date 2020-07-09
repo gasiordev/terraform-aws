@@ -9,18 +9,6 @@ variable "env" {
 variable "name" {
   type = string
 }
-variable "vpc" {
-  type = string
-}
-variable "subnet_a" {
-  type = string
-}
-variable "subnet_b" {
-  type = string
-}
-variable "subnet_c" {
-  type = string
-}
 variable "region" {
   type = string
 }
@@ -76,4 +64,7 @@ variable "route53_zones" {
   type        = map
   description = "Create IN A entry in specifiec Route 53 zones"
   default     = {}
+}
+variable "internal" {
+  type = boolean
 }

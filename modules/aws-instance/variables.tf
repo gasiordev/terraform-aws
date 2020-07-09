@@ -9,18 +9,6 @@ variable "env" {
 variable "name" {
   type = string
 }
-variable "vpc" {
-  type = string
-}
-variable "subnet_a" {
-  type = string
-}
-variable "subnet_b" {
-  type = string
-}
-variable "subnet_c" {
-  type = string
-}
 variable "az_offset" {
   type        = number
   description = "Availability zone for the instance"
@@ -72,4 +60,7 @@ variable "user_data" {
             #!/bin/bash
             echo "Hello World"
             EOF
+}
+variable "internal" {
+  type = boolean
 }

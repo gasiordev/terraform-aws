@@ -38,31 +38,31 @@ data "aws_caller_identity" "current" {}
 # VPC peering between dev env and mgmt env of production
 module "aws_vpc_peering_requester_dev_mgmt" {
   source                      = "./../../modules/aws-vpc-peering-requester"
-  vpc_id                      = module.aws_vpc_dev.vpc_id
-  peer_vpc_id                 = data.terraform_remote_state.production.outputs.mgmt_vpc_id
-  peer_cidr_block             = data.terraform_remote_state.production.outputs.mgmt_cidr_block
+  vpc_id                      = module.aws_vpc_dev.vpc_attributes.vpc_id
+  peer_vpc_id                 = data.terraform_remote_state.production.outputs.mgmt_vpc_attributes.vpc_id
+  peer_cidr_block             = data.terraform_remote_state.production.outputs.mgmt_vpc_attributes.cidr_block
   # We want dev env to have access to prod env through the dev-mgmt VPC peering,
   # hence the CIDR block must be routed here
-  additional_peer_cidr_blocks = { 
-    "prod" = data.terraform_remote_state.production.outputs.prod_cidr_block
+  additional_peer_cidr_blocks = {
+    "prod" = data.terraform_remote_state.production.outputs.prod_vpc_attributes.cidr_block
   }
   peer_region                 = data.terraform_remote_state.production.outputs.region
   peer_owner_id               = data.terraform_remote_state.production.outputs.account_id
-  route_table_public          = module.aws_vpc_dev.route_table_public
-  route_table_private_a       = module.aws_vpc_dev.route_table_private_a
-  route_table_private_b       = module.aws_vpc_dev.route_table_private_b
-  route_table_private_c       = module.aws_vpc_dev.route_table_private_c
+  route_table_public          = module.aws_vpc_dev.vpc_attributes.route_table_id.public
+  route_table_private_a       = module.aws_vpc_dev.vpc_attributes.route_table_id.private.a
+  route_table_private_b       = module.aws_vpc_dev.vpc_attributes.route_table_id.private.b
+  route_table_private_c       = module.aws_vpc_dev.vpc_attributes.route_table_id.private.c
   name                        = "${var.env_name_dev}-${data.terraform_remote_state.production.outputs.mgmt_env}"
 }
 
 module "aws_vpc_peering_accepter_dev_mgmt" {
   source                     = "./../../modules/aws-vpc-peering-accepter"
   vpc_peering_connection_id  = module.aws_vpc_peering_requester_dev_mgmt.vpc_peering_connection_id
-  cidr_block                 = module.aws_vpc_dev.cidr_block
-  peer_route_table_public    = data.terraform_remote_state.production.outputs.mgmt_route_table_public
-  peer_route_table_private_a = data.terraform_remote_state.production.outputs.mgmt_route_table_private_a
-  peer_route_table_private_b = data.terraform_remote_state.production.outputs.mgmt_route_table_private_b
-  peer_route_table_private_c = data.terraform_remote_state.production.outputs.mgmt_route_table_private_c
+  cidr_block                 = module.aws_vpc_dev.vpc_attributes.cidr_block
+  peer_route_table_public    = data.terraform_remote_state.production.outputs.mgmt_vpc_attributes.route_table_id.public
+  peer_route_table_private_a = data.terraform_remote_state.production.outputs.mgmt_vpc_attributes.route_table_id.private.a
+  peer_route_table_private_b = data.terraform_remote_state.production.outputs.mgmt_vpc_attributes.route_table_id.private.b
+  peer_route_table_private_c = data.terraform_remote_state.production.outputs.mgmt_vpc_attributes.route_table_id.private.c
   request_region             = data.aws_region.current.name
   request_owner_id           = data.aws_caller_identity.current.account_id
   name                       = "${var.env_name_dev}-${data.terraform_remote_state.production.outputs.mgmt_env}"

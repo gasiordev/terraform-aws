@@ -1,7 +1,7 @@
 resource "aws_security_group" "lb" {
   name = "${var.env}-lb-${var.name}"
   description = "Load balancer of ${var.name} in ${var.env} env"
-  vpc_id = var.vpc
+  vpc_id = var.vpc_attributes.vpc_id
 }
 
 resource "aws_security_group_rule" "lb_to_instance" {
@@ -29,11 +29,7 @@ resource "aws_lb" "main" {
 
   security_groups = compact(concat(list(aws_security_group.lb.id), var.security_groups))
 
-  subnets = [
-    var.subnet_a,
-    var.subnet_b,
-    var.subnet_c
-  ]
+  subnets = var.internal ? [var.vpc_attributes.subnet_id.private.a, var.vpc_attributes.subnet_id.private.b, var.vpc_attributes.subnet_id.private.c] : [var.vpc_attributes.subnet_id.public.a, var.vpc_attributes.subnet_id.public.b, var.vpc_attributes.subnet_id.public.c]
 
   tags = merge(map("${var.vendor}:tfmodule", "aws-lb", "Name", "${var.env}-${var.name}"), var.tags)
 }
@@ -42,7 +38,7 @@ resource "aws_lb_target_group" "main" {
   name = "${var.env}-${var.name}"
   port = var.target_group_port
   protocol = var.target_group_protocol
-  vpc_id = var.vpc
+  vpc_id = var.vpc_attributes.vpc_id
   deregistration_delay = 30
   health_check {
     path = var.target_group_healthcheck_path
