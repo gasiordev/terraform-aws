@@ -21,9 +21,6 @@ variable "instance_class" {
 variable "storage" {
   type = number
 }
-variable "vpc" {
-  type = string
-}
 variable "subnet_group" {
   type = string
 }

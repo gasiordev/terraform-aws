@@ -15,25 +15,25 @@ data "terraform_remote_state" "network_production" {
   backend = "local"
   config = {
     path = "./../../network/10_production/terraform.tfstate"
-  } 
+  }
 }
 data "terraform_remote_state" "base_production" {
   backend = "local"
   config = {
     path = "./../../base/10_production/terraform.tfstate"
-  } 
+  }
 }
 data "terraform_remote_state" "network_failover" {
   backend = "local"
   config = {
     path = "./../../network/20_failover/terraform.tfstate"
-  } 
+  }
 }
 data "terraform_remote_state" "base_failover" {
   backend = "local"
   config = {
     path = "./../../base/20_failover/terraform.tfstate"
-  } 
+  }
 }
 
 # Production
@@ -41,20 +41,14 @@ module "aws_apps_test_prod" {
   source            = "./../../modules/aws-apps-test"
   vendor            = var.vendor
   env               = "prod"
-  vpc               = data.terraform_remote_state.network_production.outputs.prod_vpc_id
-  private_subnet_a  = data.terraform_remote_state.network_production.outputs.prod_subnet_private_a
-  private_subnet_b  = data.terraform_remote_state.network_production.outputs.prod_subnet_private_b
-  private_subnet_c  = data.terraform_remote_state.network_production.outputs.prod_subnet_private_c
-  public_subnet_a   = data.terraform_remote_state.network_production.outputs.prod_subnet_public_a
-  public_subnet_b   = data.terraform_remote_state.network_production.outputs.prod_subnet_public_b
-  public_subnet_c   = data.terraform_remote_state.network_production.outputs.prod_subnet_public_c
+  vpc_attributes    = data.terraform_remote_state.network_production.outputs.prod_vpc_attributes
   instance_count    = 0
   ssh_key_name      = "nicholas"
   ssl_certificate   = var.production_certificate
   route53_zones     = {
     "awslabs" = var.route53_zone
   }
-  private_db_subnet = data.terraform_remote_state.base_production.outputs.prod_db_subnet_private
+  private_db_subnet = data.terraform_remote_state.base_production.outputs.prod_env_base_attributes.db_subnet_id.private
   db_username       = "nicholas"
   db_password       = "password123"
 }
@@ -67,20 +61,14 @@ module "aws_apps_test_fprod" {
   }
   vendor                = var.vendor
   env                   = "fprod"
-  vpc                   = data.terraform_remote_state.network_failover.outputs.prod_vpc_id
-  private_subnet_a      = data.terraform_remote_state.network_failover.outputs.prod_subnet_private_a
-  private_subnet_b      = data.terraform_remote_state.network_failover.outputs.prod_subnet_private_b
-  private_subnet_c      = data.terraform_remote_state.network_failover.outputs.prod_subnet_private_c
-  public_subnet_a       = data.terraform_remote_state.network_failover.outputs.prod_subnet_public_a
-  public_subnet_b       = data.terraform_remote_state.network_failover.outputs.prod_subnet_public_b
-  public_subnet_c       = data.terraform_remote_state.network_failover.outputs.prod_subnet_public_c
+  vpc_attributes        = data.terraform_remote_state.network_failover.outputs.prod_vpc_attributes
   instance_count        = 0
   ssh_key_name          = "nicholas"
   ssl_certificate       = var.failover_certificate
   route53_zones         = {
     "awslabs" = var.route53_zone
   }
-  private_db_subnet     = data.terraform_remote_state.base_failover.outputs.prod_db_subnet_private
+  private_db_subnet     = data.terraform_remote_state.base_failover.outputs.fprod_env_base_attributes.db_subnet_id.private
   db_replication_source = var.failover_db_replication == true ? module.aws_apps_test_prod.db_instance_arn : ""
 }
 
@@ -94,4 +82,3 @@ module "prod_s3_bucket" {
   replica_region = var.region_failover
   replica_env = "fprod"
 }
-

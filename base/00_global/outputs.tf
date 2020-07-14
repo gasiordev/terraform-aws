@@ -1,7 +1,6 @@
-output "prod_instance_role" {
-  value = module.aws_base_prod.instance_role
+output "prod_instance_attributes" {
+  value = module.aws_base_prod.instance_attributes
 }
-output "prod_instance_profile" {
-  value = module.aws_base_prod.instance_profile
+output "mgmt_instance_attributes" {
+  value = module.aws_base_mgmt.instance_attributes
 }
-

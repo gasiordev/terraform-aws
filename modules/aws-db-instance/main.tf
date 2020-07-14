@@ -1,7 +1,7 @@
 resource "aws_security_group" "db" {
   name = "${var.env}-rds-${var.name}"
   description = "RDS of ${var.name} in ${var.env} env"
-  vpc_id = var.vpc
+  vpc_id = var.vpc_attributes.vpc_id
 
   count = var.create_new_security_group == true || length(var.security_groups) == 0 ? 1 : 0
 }
@@ -44,4 +44,3 @@ resource "aws_route53_record" "main" {
   ttl = 5
   records = [aws_db_instance.main.address]
 }
-

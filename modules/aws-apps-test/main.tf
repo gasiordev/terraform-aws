@@ -67,7 +67,6 @@ module "aws_lb" {
   }
   security_groups = []
   route53_zones = var.route53_zones
-  internal = false
 }
 
 module "aws_db_instance" {

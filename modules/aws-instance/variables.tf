@@ -62,5 +62,5 @@ variable "user_data" {
             EOF
 }
 variable "internal" {
-  type = boolean
+  type = bool
 }

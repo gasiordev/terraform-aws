@@ -27,10 +27,6 @@ variable "instance_ids" {
 variable "instance_security_group" {
   type = string
 }
-variable "internal" {
-  type    = bool
-  default = true
-}
 variable "listeners" {
   type    = map
   default = {
@@ -66,5 +62,5 @@ variable "route53_zones" {
   default     = {}
 }
 variable "internal" {
-  type = boolean
+  type = bool
 }
